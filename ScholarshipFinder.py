@@ -8,7 +8,10 @@ def find_max_scholarship(matrix, scholarship_limit=11):
     best_diag_down = max_diagonal_down(matrix, scholarship_limit)
     best_diag_up = max_diagonal_up(matrix, scholarship_limit)
 
-    return find_max_sequence([best_horizontal, best_vertical, best_diag_down, best_diag_up])
+    result = {}
+    result['sequence'] = find_max_sequence([best_horizontal, best_vertical, best_diag_down, best_diag_up])
+    result['total'] = reduce(operator.mul, result['sequence'])
+    return result
 
 
 def find_max_sequence(sequence_list):
@@ -50,7 +53,7 @@ def max_horizontal(matrix, limit):
 def max_vertical(matrix, limit):
     matrix = numpy.transpose(matrix)  # transpose matrix to turn columns into rows using numpy
     matrix = [list(x) for x in matrix]  # turn numpy arrays back into python lists
-    
+
     if limit:
         return find_max_sequence([find_max_sequence(make_subsequences(x, limit)) for x in matrix])
     else:
@@ -88,11 +91,3 @@ def max_diagonal_down(matrix, limit):
     else:
         return find_max_sequence(matrix)
 
-# tests
-sample_matrix = [[1, 2, 3, 4, 5],
-                 [1, 1, 2, 3, 5],
-                 [3, 4, 5, 5, 5],
-                 [3, 4, 5, 9, 5],
-                 [1, 1, 5, 5, 25]]
-print find_max_scholarship(sample_matrix)  # expected result: [5, 5, 5, 5, 25]
-print find_max_scholarship(sample_matrix, 3)  # expected result: [5, 9, 25]
