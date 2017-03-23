@@ -1,12 +1,6 @@
 import operator
 import numpy
 
-sample_matrix = [[1, 2, 3, 4, 5],
-                 [1, 1, 2, 3, 5],
-                 [3, 4, 5, 5, 5],
-                 [3, 4, 5, 9, 5],
-                 [1, 1, 5, 5, 25]]
-
 
 def find_max_scholarship(matrix, scholarship_limit=11):
     best_horizontal = max_horizontal(matrix, scholarship_limit)
@@ -54,8 +48,9 @@ def max_horizontal(matrix, limit):
 
 
 def max_vertical(matrix, limit):
-    matrix = numpy.transpose(matrix)  # transpose matrix to turn columns into rows
-
+    matrix = numpy.transpose(matrix)  # transpose matrix to turn columns into rows using numpy
+    matrix = [list(x) for x in matrix]  # turn numpy arrays back into python lists
+    
     if limit:
         return find_max_sequence([find_max_sequence(make_subsequences(x, limit)) for x in matrix])
     else:
@@ -69,7 +64,7 @@ def max_diagonal_up(matrix, limit):
     # then we find the diagonals and put them into a list
     diags = [new_matrix[::-1, :].diagonal(i) for i in range(-new_matrix.shape[0] + 1, new_matrix.shape[1])]
 
-    # then we convert elements back to lists
+    # then we convert diagonals from numpy arrays back to lists
     diags = [elem.tolist() for elem in diags]
 
     if limit < max([len(x) for x in diags]):
@@ -85,7 +80,7 @@ def max_diagonal_down(matrix, limit):
     # then we find the diagonals and put them into a list
     diags = [new_matrix.diagonal(i) for i in range(new_matrix.shape[1] - 1, -new_matrix.shape[0], -1)]
 
-    # then we convert elements back to lists
+    # then we convert diagonals from numpy arrays back to lists
     diags = [elem.tolist() for elem in diags]
 
     if limit < max([len(x) for x in diags]):
@@ -93,5 +88,11 @@ def max_diagonal_down(matrix, limit):
     else:
         return find_max_sequence(matrix)
 
-
-print find_max_scholarship(sample_matrix, 3)
+# tests
+sample_matrix = [[1, 2, 3, 4, 5],
+                 [1, 1, 2, 3, 5],
+                 [3, 4, 5, 5, 5],
+                 [3, 4, 5, 9, 5],
+                 [1, 1, 5, 5, 25]]
+print find_max_scholarship(sample_matrix)  # expected result: [5, 5, 5, 5, 25]
+print find_max_scholarship(sample_matrix, 3)  # expected result: [5, 9, 25]
